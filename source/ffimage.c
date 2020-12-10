@@ -82,14 +82,14 @@ void ffimage_saveAs(ffimage* self, const char* filename){
 		exit(-1);
 	}
 	uint8_t width[] = {
-		0,
-		0,
+		255 & (self->width>>24),
+		255 & (self->width>>16),
 		255 & (self->width>>8),
 		255 & self->width,
 	};
 	uint8_t height[] = {
-		0,
-		0,
+		255 & (self->height>>24),
+		255 & (self->height>>16),
 		255 & (self->height>>8),
 		255 & self->height,
 	};
@@ -98,4 +98,10 @@ void ffimage_saveAs(ffimage* self, const char* filename){
 	fwrite(height, 4, 1, file);
 	fwrite(self->buffer, 2*4*self->width*self->height, 1, file);
 	fclose(file);
+}
+
+void ffimage_destroy(ffimage* self){
+	if(self == NULL) return;
+	free(self->buffer);
+	free(self);
 }

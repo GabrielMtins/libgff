@@ -45,4 +45,6 @@ void ffimage_drawLine(ffimage* self, int x1, int y1, int x2, int y2, int thickne
 
 void ffimage_saveAs(ffimage* self, const char* filename);
 
+void ffimage_destroy(ffimage* self);
+
 #endif
