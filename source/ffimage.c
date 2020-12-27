@@ -100,6 +100,26 @@ void ffimage_saveAs(ffimage* self, const char* filename){
 	fclose(file);
 }
 
+void ffimage_saveToOutput(ffimage* self){
+	FILE* file = stdout;
+	uint8_t width[] = {
+		255 & (self->width>>24),
+		255 & (self->width>>16),
+		255 & (self->width>>8),
+		255 & self->width,
+	};
+	uint8_t height[] = {
+		255 & (self->height>>24),
+		255 & (self->height>>16),
+		255 & (self->height>>8),
+		255 & self->height,
+	};
+	fwrite("farbfeld", 8, 1, file);
+	fwrite(width, 4, 1, file);
+	fwrite(height, 4, 1, file);
+	fwrite(self->buffer, 2*4*self->width*self->height, 1, file);
+}
+
 void ffimage_destroy(ffimage* self){
 	if(self == NULL) return;
 	free(self->buffer);
