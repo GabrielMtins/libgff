@@ -73,6 +73,21 @@ void ffimage_clear(ffimage* self, ffcolor c){
 	}
 }
 
+ffcolor ffimage_getPixel(ffimage* self, int i, int j){
+	if(i < 0 || j < 0 || i >= self->width || j >= self->height){
+		ffcolor c = {0, 0, 0, 0};
+		return c;
+	}
+
+	ffcolor c = {
+		self->buffer[8*(i+j*self->width)+0],
+		self->buffer[8*(i+j*self->width)+2],
+		self->buffer[8*(i+j*self->width)+4],
+		self->buffer[8*(i+j*self->width)+6]
+	};
+	return c;
+}
+
 void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c){
 	if(i < 0 || j < 0 || i >= self->width || j >= self->height) return;
 

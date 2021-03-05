@@ -39,6 +39,8 @@ ffimage* ffimage_load(const char* filename);
 
 void ffimage_clear(ffimage* self, ffcolor c);
 
+ffcolor ffimage_getPixel(ffimage* self, int i, int j);
+
 void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c);
 
 void ffimage_drawRect(ffimage* self, int x, int y, int w, int h, ffcolor c);
