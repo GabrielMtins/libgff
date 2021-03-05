@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 /*
@@ -32,6 +33,30 @@ ffimage* ffimage_create(int width, int height){
 	return self;
 }
 
+ffimage* ffimage_load(const char* filename){
+	FILE* file = fopen(filename, "rb");
+	if(file == NULL) return NULL;
+
+	char farbfeld[8] = "";
+	fread(farbfeld, 8, 1, file);
+
+	if(strcmp(farbfeld, "farbfeld")){
+		fclose(file);
+		return NULL; // check magic number
+	}
+
+	ffimage* self = malloc(sizeof(ffimage));
+
+	fread(&self->width, 1, 4, file);
+	fread(&self->height, 1, 4, file);
+
+	uint32_t buffer_size = self->width*self->height*4*2;
+	self->buffer = malloc(buffer_size);
+	fread(self->buffer, 1, buffer_size, file);
+
+	return self;
+}
+
 void ffimage_clear(ffimage* self, ffcolor c){
 	for(int i = 0; i < self->width; i++){
 		for(int j = 0; j < self->height; j++){
@@ -42,6 +67,7 @@ void ffimage_clear(ffimage* self, ffcolor c){
 
 void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c){
 	if(i < 0 || j < 0 || i >= self->width || j >= self->height) return;
+
 	self->buffer[8*(i+j*self->width)+7] = 0;
 	self->buffer[8*(i+j*self->width)+6] = c.a;
 	self->buffer[8*(i+j*self->width)+5] = 0;
@@ -56,9 +82,12 @@ void ffimage_drawLine(ffimage* self, int x1, int y1, int x2, int y2, int thickne
 	double dx = (x2-x1);
 	double dy = (y2-y1);
 	double steps = 0;
+
 	if(fabs(dx) > fabs(dy)) steps = fabs(dx);
 	else steps = fabs(dy);
+
 	double start_x = x1, start_y = y1;
+
 	for(int i = 0; i < steps; i++){
 		start_x+=(double)dx/steps;
 		start_y+=(double)dy/steps;

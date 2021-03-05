@@ -35,6 +35,8 @@ typedef struct{
 
 ffimage* ffimage_create(int width, int height);
 
+ffimage* ffimage_load(const char* filename);
+
 void ffimage_clear(ffimage* self, ffcolor c);
 
 void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c);
