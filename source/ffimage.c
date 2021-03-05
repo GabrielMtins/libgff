@@ -37,8 +37,9 @@ ffimage* ffimage_load(const char* filename){
 	FILE* file = fopen(filename, "rb");
 	if(file == NULL) return NULL;
 
-	char farbfeld[8] = "";
+	char farbfeld[9] = "";
 	fread(farbfeld, 8, 1, file);
+	farbfeld[8] = '\0';
 
 	if(strcmp(farbfeld, "farbfeld")){
 		fclose(file);
@@ -47,10 +48,17 @@ ffimage* ffimage_load(const char* filename){
 
 	ffimage* self = malloc(sizeof(ffimage));
 
-	fread(&self->width, 1, 4, file);
-	fread(&self->height, 1, 4, file);
+	uint8_t width[4];
+	uint8_t height[4];
+
+	fread(width, 1, 4, file);
+	self->width = (width[0]<<24) + (width[1]<<16) + (width[2]<<8) + (width[3]);
+
+	fread(height, 1, 4, file);
+	self->height = (height[0]<<24) + (height[1]<<16) + (height[2]<<8) + (height[3]);
 
 	uint32_t buffer_size = self->width*self->height*4*2;
+
 	self->buffer = malloc(buffer_size);
 	fread(self->buffer, 1, buffer_size, file);
 
