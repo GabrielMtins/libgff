@@ -66,6 +66,7 @@ ffimage* ffimage_load(const char* filename){
 }
 
 void ffimage_clear(ffimage* self, ffcolor c){
+	if(self == NULL) return;
 	for(int i = 0; i < self->width; i++){
 		for(int j = 0; j < self->height; j++){
 			ffimage_drawPixel(self, i, j, c);
@@ -74,8 +75,8 @@ void ffimage_clear(ffimage* self, ffcolor c){
 }
 
 ffcolor ffimage_getPixel(ffimage* self, int i, int j){
-	if(i < 0 || j < 0 || i >= self->width || j >= self->height){
-		ffcolor c = {0, 0, 0, 0};
+	if(self == NULL || i < 0 || j < 0 || i >= self->width || j >= self->height){
+		ffcolor c = {0, 0, 0, 255};
 		return c;
 	}
 
@@ -89,6 +90,7 @@ ffcolor ffimage_getPixel(ffimage* self, int i, int j){
 }
 
 void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c){
+	if(self == NULL) return;
 	if(i < 0 || j < 0 || i >= self->width || j >= self->height) return;
 
 	self->buffer[8*(i+j*self->width)+7] = 0;
@@ -102,6 +104,7 @@ void ffimage_drawPixel(ffimage* self, int i, int j, ffcolor c){
 }
 
 void ffimage_drawLine(ffimage* self, int x1, int y1, int x2, int y2, int thickness, ffcolor c){
+	if(self == NULL) return;
 	double dx = (x2-x1);
 	double dy = (y2-y1);
 	double steps = 0;
@@ -120,6 +123,7 @@ void ffimage_drawLine(ffimage* self, int x1, int y1, int x2, int y2, int thickne
 }
 
 void ffimage_drawRect(ffimage* self, int x, int y, int w, int h, ffcolor c){
+	if(self == NULL) return;
 	for(int i = 0; i < w; i++){
 		for(int j = 0; j < h; j++){
 			ffimage_drawPixel(self, x+i, y+j, c);
@@ -128,6 +132,7 @@ void ffimage_drawRect(ffimage* self, int x, int y, int w, int h, ffcolor c){
 }
 
 void ffimage_saveAs(ffimage* self, const char* filename){
+	if(self == NULL) return;
 	FILE* file = fopen(filename, "wb");
 	if(file == NULL){
 		printf("failed to open file\n");
@@ -153,6 +158,7 @@ void ffimage_saveAs(ffimage* self, const char* filename){
 }
 
 void ffimage_saveToOutput(ffimage* self){
+	if(self == NULL) return;
 	FILE* file = stdout;
 	uint8_t width[] = {
 		255 & (self->width>>24),
